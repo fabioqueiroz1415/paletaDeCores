@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Degrade em HTML</title>
+    <style>
+        body {
+            background-color: black;
+            /* Aqui você pode ajustar as cores e a direção do degradê.
+            Neste exemplo, estamos usando um degradê vertical que vai do vermelho (#ff0000) ao azul (#0000ff). */
+            height: 100vh;
+            /* Para cobrir toda a altura da tela */
+            margin: 0;
+            /* Para remover margens padrão */
+        }
+
+        .div1 {
+            position: absolute;
+            top: calc(33vh - 40vw);
+            left: calc(50vw - 33vw);
+            background-color: rgb(131, 131, 61);
+            width: 66vw;
+            height: 40vw;
+        }
+
+        .div2 {
+            width: 66vw;
+            height: 6vw;
+            background-color: red;
+        }
+
+        .div3 {
+            width: calc(66vw - 32px);
+            height: calc(40vw - 32px - 6vw);
+            background-color: rgb(37, 36, 41);
+            padding: 16px;
+            display: flex;
+        }
+
+        .div4,
+        .div8 {
+            width: calc(66vw * 0.66);
+            height: calc(40vw - 32px - 6vw);
+        }
+
+        .div4 {
+            position: relative;
+            background: linear-gradient(to right, white, red);
+            overflow: hidden;
+        }
+
+        .div8 {
+            background: linear-gradient(to top, black, transparent);
+        }
+
+        .div5 {
+            width: calc(66vw * 0.33 * 0.5 - 32px);
+            height: calc(40vw - 32px - 6vw - 2px);
+            background: linear-gradient(to bottom, red, transparent);
+            border: 1px solid white;
+            margin-left: 16px;
+        }
+
+        .div6 {
+            width: calc(66vw * 0.33 * 0.5 - 32px);
+            height: calc(40vw - 32px - 6vw - 2px);
+            background: linear-gradient(to bottom, rgb(255, 0, 0), rgb(255, 255, 0), rgb(0, 255, 0), rgb(0, 255, 255), rgb(0, 0, 255), rgb(255, 0, 255), rgb(255, 0, 0));
+            border: 1px solid white;
+            margin-left: 16px;
+        }
+
+        .div7 {
+            width: calc(66vw * 0.33 * 0.5 - 32px + 4px);
+            height: 10px;
+            border: 1px solid white;
+            position: relative;
+            top: -5px;
+            left: -3px;
+        }
+
+        .div5:hover,
+        .div6:hover {
+            cursor: grab;
+        }
+
+        .div5:active,
+        .div6:active {
+            cursor: grabbing;
+        }
+
+        .div9 {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!--container principal-->
+    <div class="div1" id="div1">
+
+        <!--barra que mostra a cor-->
+        <div class="div2" id="div2"></div>
+        <!--containear abaixo da barra que mostra a cor-->
+        <div class="div3" id="div3">
+
+            <!--quadro de cor-->
+            <div class="div4" id="div4">
+                <!--degradê de preto-->
+                <div class="div8 circunferencia" id="div8"></div>
+
+                <!--bolinha com borda branca-->
+                <div class="div9" id="div9" style="top: -10px; right: -10px;">
+                    <svg width="100%" height="100%" class="circunferencia">
+                        <!-- Aplicação do filtro de sombra ao círculo -->
+                        <circle class="circunferencia" cx="50%" cy="50%" r="40%" stroke="white" stroke-width="1px" fill="transparent" />
+                        <circle class="circunferencia" cx="50%" cy="50%" r="45%" stroke="black" stroke-width="1px" fill="transparent" style="opacity: 0.5;"/>
+                    </svg>
+                </div>
+                
+            </div>
+
+            <!--barra de transparência-->
+            <div class="div5 controle-barra-transparencia" id="div5">
+                <div class="div7 controle-barra-transparencia" id="div7"></div>
+            </div>
+
+            <!--barra de cor-->
+            <div class="div6 controle-barra-cor" id="div6">
+                <div class="div7 controle-barra-cor" id="div10"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Pra bolinha
+        var containerPrincipal = document.getElementById('div1');
+        var quadroDeCor = document.getElementById('div4');
+        var bolinha = document.getElementById('div9');
+        var isMovableBolinha = false;
+    
+        // Pra barra de transparência
+        var barraTransparencia = document.getElementById('div5');
+        var controleBarraTransparencia = document.getElementById('div7');
+        var isMovableBarraTransparencia = false;
+
+        var controleBarraCor = document.getElementById('div10');
+        var isMovableBarraCor = false;
+    
+        document.addEventListener('mousedown', function (event) {
+            if (event.target.classList.contains('circunferencia')) {
+                isMovableBolinha = true;
+                moveBolinha(event.clientX, event.clientY);
+            }
+    
+            if (event.target.classList.contains('controle-barra-transparencia')) {
+                isMovableBarraTransparencia = true;
+                moveControleBarraTransparencia(event.clientY);
+            }
+
+            if (event.target.classList.contains('controle-barra-cor')) {
+                isMovableBarraCor = true;
+                moveControleBarraCor(event.clientY);
+            }
+        });
+    
+        document.addEventListener('mouseup', function (event) {
+            isMovableBolinha = false;
+            isMovableBarraTransparencia = false;
+            isMovableBarraCor = false;
+        });
+    
+        document.addEventListener('mousemove', function (event) {
+            if (isMovableBolinha) {
+                moveBolinha(event.clientX, event.clientY);
+            }
+    
+            if (isMovableBarraTransparencia) {
+                moveControleBarraTransparencia(event.clientY);
+            }
+
+            if (isMovableBarraCor) {
+                moveControleBarraCor(event.clientY);
+            }
+        });
+    
+        function moveBolinha(x, y) {
+            var bolinhaSize = bolinha.offsetWidth;
+            var newX = x - (quadroDeCor.offsetLeft + containerPrincipal.offsetLeft);
+            var newY = y - (quadroDeCor.offsetTop + containerPrincipal.offsetTop);
+    
+            var newRight = (quadroDeCor.offsetWidth - (newX + bolinhaSize / 2));
+            var newTop = (newY - bolinhaSize / 2);
+    
+            var minRight = - bolinhaSize / 2;
+            var minTop = - bolinhaSize / 2;
+    
+            var maxRight = quadroDeCor.offsetWidth - bolinhaSize / 2;
+            var maxTop = quadroDeCor.offsetHeight - bolinhaSize / 2;
+    
+            bolinha.style.right = Math.min(maxRight, Math.max(minRight, quadroDeCor.offsetWidth - (newX + bolinhaSize / 2))) + 'px';
+            bolinha.style.top = Math.min(maxTop, Math.max(minTop, newY - bolinhaSize / 2)) + 'px';
+        }
+    
+        function moveControleBarraTransparencia(y) {
+            moveControleBarra(controleBarraTransparencia, y);
+        }
+
+        function moveControleBarraCor(y) {
+            moveControleBarra(controleBarraCor, y);
+            atualizaCorDaDiv2ComBaseNoControleDeCor();
+        }
+
+        function moveControleBarra(controleBarra, y) {
+            var controleBarraHeight = controleBarra.offsetHeight;
+            var newY = y - (barraTransparencia.offsetTop + containerPrincipal.offsetTop);
+            var newTop = newY - controleBarraHeight / 2;
+            
+            var minTop = - controleBarraHeight / 2 + 1;
+            var maxTop = div6.offsetHeight - controleBarraHeight / 2 - 3;
+    
+            controleBarra.style.top = Math.min(maxTop, Math.max(minTop, newTop)) + 'px';
+        }
+        
+        function atualizaCorDaDiv2ComBaseNoControleDeCor() {
+            var intervalos = 7; // número de intervalos na barra de cor
+            var intervaloHeight = (div6.offsetHeight - 4) / intervalos;
+            var controleBarraCorTop = controleBarraCor.offsetTop + controleBarraCor.offsetHeight / 2 - 2 - barraTransparencia.offsetTop;
+            var indiceIntervalo = controleBarraCorTop / intervaloHeight;
+
+            var red = 0;
+            var green = 0;
+            var blue = 0;
+            console.log((controleBarraCorTop % intervaloHeight) / intervaloHeight);
+            if (indiceIntervalo < 1) {
+                red = 255;
+                green = Math.floor(255 * ((controleBarraCorTop % intervaloHeight) / intervaloHeight));
+                blue = 0;
+            } else if (indiceIntervalo < 2) {
+                red = Math.floor(255 * (1 - (controleBarraCorTop % intervaloHeight) / intervaloHeight));
+                green = 255;
+                blue = 0;
+            } else if (indiceIntervalo < 3) {
+                red = 0;
+                green = 255;
+                blue = Math.floor(255 * (controleBarraCorTop % intervaloHeight) / intervaloHeight);
+            } else if (indiceIntervalo < 4) {
+                red = 0;
+                green = Math.floor(255 * (1 - (controleBarraCorTop % intervaloHeight) / intervaloHeight));
+                blue = 255;
+            } else if (indiceIntervalo < 5) {
+                red = Math.floor(255 * (controleBarraCorTop % intervaloHeight) / intervaloHeight);
+                green = 0;
+                blue = 255;
+            } else if (indiceIntervalo < 6) {
+                red = 255;
+                green = 0;
+                blue = Math.floor(255 * (1 - (controleBarraCorTop % intervaloHeight) / intervaloHeight));
+            } else if (indiceIntervalo < 7) {
+                red = 255;
+                green = 0;
+                blue = Math.floor(255 * (controleBarraCorTop % intervaloHeight) / intervaloHeight);
+            }
+            
+            var cor = 'rgb(' + red + ', ' + green + ', ' + blue + ')';
+            div2.style.backgroundColor = cor;
+        }
+        
+        
+    </script>
+    
+    
+</body>
+</html>
